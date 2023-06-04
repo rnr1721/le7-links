@@ -33,6 +33,13 @@ class Link implements ULinkInterface
     private array $attributes;
 
     /**
+     * Children links
+     * 
+     * @var array
+     */
+    private array $children = [];
+
+    /**
      * Creates a new Link instance.
      *
      * @param string $href The URI string of the link.
@@ -308,6 +315,17 @@ class Link implements ULinkInterface
     /**
      * @inheritDoc
      */
+    public function hasAttribute(string $name): bool
+    {
+        if (isset($this->attributes[$name])) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function withHref(string|\Stringable $href): static
     {
         $new = clone $this;
@@ -356,11 +374,61 @@ class Link implements ULinkInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getChildren(?string $attribute = null, mixed $value = null): array
+    {
+
+        if (!$attribute && !$value) {
+            return $this->children;
+        }
+
+        $filteredChildren = [];
+
+        if ($attribute !== null && $value === null) {
+            /** @var ULinkInterface $child */
+            foreach ($this->children as $child) {
+                if ($child->hasAttribute($attribute)) {
+                    $filteredChildren[] = $child;
+                }
+            }
+        } elseif ($attribute !== null && $value !== null) {
+            /** @var ULinkInterface $child */
+            foreach ($this->children as $child) {
+                if ($child->getAttribute($attribute) === $value) {
+                    $filteredChildren[] = $child;
+                }
+            }
+        }
+
+        return $filteredChildren;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withChildren(ULinkInterface ...$children): self
+    {
+        $link = clone $this;
+        $link->children = $children;
+        return $link;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withChildrens(array $children): self
+    {
+        $link = clone $this;
+        $link->children = $children;
+        return $link;
+    }
+
+    /**
      * @inheritDoc
      */
     public function __toString(): string
     {
         return $this->href;
     }
-
 }

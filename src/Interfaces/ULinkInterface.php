@@ -13,6 +13,39 @@ interface ULinkInterface extends EvolvableLinkInterface, UriInterface
 {
 
     /**
+     * Get children links, all or by attribute and value
+     * 
+     * @param string|null $attribute Attribute name
+     * @param mixed $value Value of attribute if need
+     * @return array Filtered or all attributes
+     */
+    public function getChildren(?string $attribute = null, mixed $value = null): array;
+    
+    /**
+     * Get instance of this class with children items
+     * 
+     * @param ULinkInterface $children
+     * @return self
+     */
+    public function withChildren(ULinkInterface ...$children): self;
+    
+    /**
+     * Get instance of this object with many children items
+     * 
+     * @param array $children
+     * @return self
+     */
+    public function withChildrens(array $children): self;
+    
+    /**
+     * Check if attribute exists
+     * 
+     * @param string $name
+     * @return bool
+     */
+    public function hasAttribute(string $name): bool;
+
+    /**
      * Renders the link as an HTML anchor element.
      *
      * @return string The HTML representation of the link.
