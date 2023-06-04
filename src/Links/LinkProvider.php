@@ -2,15 +2,15 @@
 
 namespace Core\Links;
 
-use Psr\Link\EvolvableLinkProviderInterface;
 use Psr\Link\LinkInterface;
+use Core\Interfaces\ULinkProviderInterface;
 
 /**
  * Class LinkProvider
  *
  * Implementation of EvolvableLinkProviderInterface that stores and manages links.
  */
-class LinkProvider implements EvolvableLinkProviderInterface
+class LinkProvider implements ULinkProviderInterface
 {
 
     private array $links = [];
@@ -77,7 +77,7 @@ class LinkProvider implements EvolvableLinkProviderInterface
     /**
      * @inheritDoc
      */
-    public function withoutLinks(array $links): EvolvableLinkProviderInterface
+    public function withoutLinks(array $links): self
     {
         $clone = clone $this;
         foreach ($links as $link) {
@@ -88,5 +88,4 @@ class LinkProvider implements EvolvableLinkProviderInterface
         }
         return $clone;
     }
-
 }
