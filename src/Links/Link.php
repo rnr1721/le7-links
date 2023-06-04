@@ -11,6 +11,8 @@ use Core\Interfaces\ULinkInterface;
 class Link implements ULinkInterface
 {
 
+    private ?string $anchor = null;
+
     /**
      * The URI string of the link.
      *
@@ -256,12 +258,13 @@ class Link implements ULinkInterface
      */
     public function render(): string
     {
+        $anchor = $this->anchor ?? '';
         $rel = implode(' ', $this->rel);
         $attributes = '';
         foreach ($this->attributes as $name => $value) {
             $attributes .= sprintf(' %s="%s"', $name, htmlspecialchars($value));
         }
-        return sprintf('<a href="%s" rel="%s"%s>', htmlspecialchars($this->href), $rel, $attributes);
+        return sprintf('<a href="%s" rel="%s"%s>%s</a>', htmlspecialchars($this->href), $rel, $attributes, $anchor);
     }
 
     /**
@@ -422,6 +425,18 @@ class Link implements ULinkInterface
         $link = clone $this;
         $link->children = $children;
         return $link;
+    }
+
+    public function withAnchor(string $anchor): self
+    {
+        $link = clone $this;
+        $link->anchor = $anchor;
+        return $link;
+    }
+
+    public function getAnchor(): string
+    {
+        return $this->anchor ?? '';
     }
 
     /**

@@ -13,6 +13,21 @@ interface ULinkInterface extends EvolvableLinkInterface, UriInterface
 {
 
     /**
+     * Get link clone with anchor
+     * 
+     * @param string $anchor Link anchor for render
+     * @return self
+     */
+    public function withAnchor(string $anchor): self;
+
+    /**
+     * Get link anchor
+     * 
+     * @return string
+     */
+    public function getAnchor(): string;
+
+    /**
      * Get children links, all or by attribute and value
      * 
      * @param string|null $attribute Attribute name
@@ -20,7 +35,7 @@ interface ULinkInterface extends EvolvableLinkInterface, UriInterface
      * @return array Filtered or all attributes
      */
     public function getChildren(?string $attribute = null, mixed $value = null): array;
-    
+
     /**
      * Get instance of this class with children items
      * 
@@ -28,7 +43,7 @@ interface ULinkInterface extends EvolvableLinkInterface, UriInterface
      * @return self
      */
     public function withChildren(ULinkInterface ...$children): self;
-    
+
     /**
      * Get instance of this object with many children items
      * 
@@ -36,7 +51,7 @@ interface ULinkInterface extends EvolvableLinkInterface, UriInterface
      * @return self
      */
     public function withChildrens(array $children): self;
-    
+
     /**
      * Check if attribute exists
      * 
