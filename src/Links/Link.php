@@ -47,12 +47,19 @@ class Link implements ULinkInterface
      * @param string $href The URI string of the link.
      * @param array $rel An array of link relation types.
      * @param array $attributes Assoc array of additional attributes for the link.
+     * @param string|null $anchor Anchor of the link
      */
-    public function __construct(string $href, array $rel = [], array $attributes = [])
+    public function __construct(
+            string $href,
+            array $rel = [],
+            array $attributes = [],
+            ?string $anchor = null
+    )
     {
         $this->href = $href;
         $this->rel = $rel;
         $this->attributes = $attributes;
+        $this->anchor = $anchor;
     }
 
     // LinkInterface...
