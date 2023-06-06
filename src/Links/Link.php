@@ -1,8 +1,11 @@
 <?php
 
+declare (strict_types=1);
+
 namespace Core\Links;
 
 use Core\Interfaces\ULinkInterface;
+use \Stringable;
 
 /**
  * Represents a link with additional functionality for manipulating URIs and
@@ -266,12 +269,19 @@ class Link implements ULinkInterface
     public function render(): string
     {
         $anchor = $this->anchor ?? '';
-        $rel = implode(' ', $this->rel);
+        if (count($this->rel) === 0) {
+            $rel = '';
+        } else {
+            $rel = 'rel="' . implode(' ', $this->rel) . '"';
+        }
         $attributes = '';
         foreach ($this->attributes as $name => $value) {
-            $attributes .= sprintf(' %s="%s"', $name, htmlspecialchars($value));
+            if (is_array($value)) {
+                $value = implode(' ', $value);
+            }
+            $attributes .= sprintf(' %s="%s"', $name, htmlspecialchars((string) $value));
         }
-        return sprintf('<a href="%s" rel="%s"%s>%s</a>', htmlspecialchars($this->href), $rel, $attributes, $anchor);
+        return sprintf('<a href="%s" %s%s>%s</a>', htmlspecialchars($this->href), $rel, $attributes, $anchor);
     }
 
     /**
@@ -336,7 +346,7 @@ class Link implements ULinkInterface
     /**
      * @inheritDoc
      */
-    public function withHref(string|\Stringable $href): static
+    public function withHref(string|Stringable $href): static
     {
         $new = clone $this;
         $new->href = (string) $href;
@@ -366,10 +376,23 @@ class Link implements ULinkInterface
     /**
      * @inheritDoc
      */
-    public function withAttribute(string $attribute, string|\Stringable|int|float|bool|array $value): static
+    public function withAttribute(string $attribute, string|Stringable|int|float|bool|array $value): static
     {
         $new = clone $this;
         $new->attributes[$attribute] = $value;
+        return $new;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withAttributes(array $attributes): self
+    {
+        $new = clone $this;
+        $filteredAttributes = array_filter($attributes, function ($value) {
+            return is_string($value) || is_array($value) || is_bool($value) || is_float($value) || $value instanceof Stringable;
+        });
+        $new->attributes = array_merge($new->attributes, $filteredAttributes);
         return $new;
     }
 

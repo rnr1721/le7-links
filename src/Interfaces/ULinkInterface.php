@@ -4,6 +4,7 @@ namespace Core\Interfaces;
 
 use Psr\Http\Message\UriInterface;
 use Psr\Link\EvolvableLinkInterface;
+use \Stringable;
 
 /**
  * The ULinkInterface represents a link that combines the functionality of
@@ -45,13 +46,21 @@ interface ULinkInterface extends EvolvableLinkInterface, UriInterface
     public function withChildren(ULinkInterface ...$children): self;
 
     /**
-     * Get instance of this object with many children items
+     * Get clone of this object with many children items
      * 
      * @param array $children
      * @return self
      */
     public function withChildrens(array $children): self;
 
+    /**
+     * Get clone of this object with multiple attributes
+     * 
+     * @param array<string|Stringable|int|float|bool|array> $attributes
+     * @return self
+     */
+    public function withAttributes(array $attributes): self;
+    
     /**
      * Check if attribute exists
      * 
