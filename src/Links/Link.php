@@ -329,7 +329,11 @@ class Link implements ULinkInterface
      */
     public function getAttribute(string $name): string|null
     {
-        return $this->attributes[$name] ?? null;
+        $result = $this->attributes[$name] ?? null;
+        if (is_array($result)) {
+            return implode(' ', $result);
+        }
+        return $result;
     }
 
     /**
@@ -380,6 +384,30 @@ class Link implements ULinkInterface
     {
         $new = clone $this;
         $new->attributes[$attribute] = $value;
+        return $new;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withAddedAttribute(
+            string $attribute,
+            string|Stringable|int|float|bool|array $value
+    ): self
+    {
+        $new = clone $this;
+        $current = $new->getAttribute($attribute);
+        if ($current) {
+            $existingValue = explode(' ', $current);
+            if (is_array($value)) {
+                $existingValue = array_merge($value, $existingValue);
+            } else {
+                $existingValue[] = $value;
+            }
+            $new->attributes[$attribute] = implode(' ', $existingValue);
+        } else {
+            $new->attributes[$attribute] = $value;
+        }
         return $new;
     }
 

@@ -60,7 +60,19 @@ interface ULinkInterface extends EvolvableLinkInterface, UriInterface
      * @return self
      */
     public function withAttributes(array $attributes): self;
-    
+
+    /**
+     * Returns a new Link instance with the specified attribute added or updated.
+     *
+     * If the attribute already exists, the method appends the new value to the existing attribute value.
+     * If the attribute does not exist, it is added with the provided value.
+     *
+     * @param string $attribute The name of the attribute.
+     * @param string|Stringable|int|float|bool|array $value The value of the attribute.
+     * @return self A new Link instance with the added or updated attribute.
+     */
+    public function withAddedAttribute(string $attribute, string|Stringable|int|float|bool|array $value): self;
+
     /**
      * Check if attribute exists
      * 
