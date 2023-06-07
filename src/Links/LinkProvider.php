@@ -4,6 +4,8 @@ namespace Core\Links;
 
 use Psr\Link\LinkInterface;
 use Core\Interfaces\ULinkProviderInterface;
+use function array_search,
+             in_array;
 
 /**
  * Class LinkProvider

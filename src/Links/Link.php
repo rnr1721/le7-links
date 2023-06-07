@@ -6,6 +6,30 @@ namespace Core\Links;
 
 use Core\Interfaces\ULinkInterface;
 use \Stringable;
+use function parse_url,
+             count,
+             implode,
+             explode,
+             sprintf,
+             htmlspecialchars,
+             in_array,
+             preg_match,
+             is_array,
+             is_bool,
+             is_string,
+             is_float,
+             is_int,
+             array_filter,
+             array_diff,
+             array_unique,
+             array_merge;
+use const PHP_URL_SCHEME,
+          PHP_URL_USER,
+          PHP_URL_HOST,
+          PHP_URL_PORT,
+          PHP_URL_PATH,
+          PHP_URL_QUERY,
+          PHP_URL_FRAGMENT;
 
 /**
  * Represents a link with additional functionality for manipulating URIs and
@@ -281,7 +305,7 @@ class Link implements ULinkInterface
             }
             $attributes .= sprintf(' %s="%s"', $name, htmlspecialchars((string) $value));
         }
-        return sprintf('<a href="%s" %s%s>%s</a>', htmlspecialchars($this->href), $rel, $attributes, $anchor);
+        return sprintf('<a href="%s" %s%s>%s</a>', htmlspecialchars($this->href), $rel, ltrim($attributes, ' '), $anchor);
     }
 
     /**
@@ -380,7 +404,10 @@ class Link implements ULinkInterface
     /**
      * @inheritDoc
      */
-    public function withAttribute(string $attribute, string|Stringable|int|float|bool|array $value): static
+    public function withAttribute(
+            string $attribute,
+            string|Stringable|int|float|bool|array $value
+    ): static
     {
         $new = clone $this;
         $new->attributes[$attribute] = $value;
@@ -404,7 +431,7 @@ class Link implements ULinkInterface
             } else {
                 $existingValue[] = $value;
             }
-            $new->attributes[$attribute] = implode(' ', $existingValue);
+            $new->attributes[$attribute] = implode(' ', array_unique($existingValue));
         } else {
             $new->attributes[$attribute] = $value;
         }
@@ -418,7 +445,7 @@ class Link implements ULinkInterface
     {
         $new = clone $this;
         $filteredAttributes = array_filter($attributes, function ($value) {
-            return is_string($value) || is_array($value) || is_bool($value) || is_float($value) || $value instanceof Stringable;
+            return is_string($value) || is_array($value) || is_bool($value) || is_float($value) || is_int($value) || $value instanceof Stringable;
         });
         $new->attributes = array_merge($new->attributes, $filteredAttributes);
         return $new;
